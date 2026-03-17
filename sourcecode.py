@@ -81,3 +81,27 @@ def risk_label(prob):
         return "High Risk"
 
 risk_scores = [risk_label(p) for p in y_prob]
+
+
+results = X_val.copy()
+
+results['Actual'] = y_val.values
+results['Predicted'] = y_pred
+results['Probability'] = model.predict_proba(X_val)[:, 1]
+
+def risk_label(prob):
+    if prob > 0.75:
+        return "Low Risk"
+    elif prob > 0.5:
+        return "Medium Risk"
+    else:
+        return "High Risk"
+
+results['Risk'] = results['Probability'].apply(risk_label)
+
+results['Predicted_Label'] = results['Predicted'].map({
+    1: 'Approved',
+    0: 'Rejected'
+})
+
+print(results.head(10))
